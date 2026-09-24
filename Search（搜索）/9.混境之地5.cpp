@@ -1,4 +1,4 @@
-﻿/*
+/*
 问题描述
 小蓝有一天误入了一个混境之地。
 
@@ -61,3 +61,47 @@ No
 
 数据范围
 对于所有测试样例，1≤n,m≤1000，1≤k,hij≤10^6。*/
+#include<iostream>
+using namespace std;
+
+int n, m, k, A, B, C, D;
+int g[1009][1009];
+int dx[4] = { -1,0,1,0 };
+int dy[4] = { 0,1,0,-1 };
+bool st[1009][1009];
+
+void dfs(int x, int y)
+{
+    st[x][y] = true;
+    for (int i = 0; i <= 3; i++)
+    {
+        int tx = x + dx[i];
+        int ty = y + dy[i];
+        if (tx <= 0 || ty <= 0 || tx > n || ty > m || st[tx][ty]) continue;
+        if (g[tx][ty] >= g[x][y]) continue;
+        dfs(tx, ty);
+    }
+
+}
+
+int main()
+{
+    ios::sync_with_stdio(0); cin.tie(0); cout.tie(0);
+    cin >> n >> m >> k;
+    cin >> A >> B >> C >> D;
+    for (int i = 1; i <= n; i++)
+        for (int j = 1; j <= m; j++)
+            cin >> g[i][j];
+    dfs(A, B);
+    for (int i = 1; i <= n; i++)
+        for (int j = 1; j <= m; j++)
+            if (st[i][j])
+                g[i][j] += k;
+    memset(st, 0, sizeof st);
+    dfs(A, B);
+    if (st[C][D])
+        cout << "Yes";
+    else cout << "No";
+
+    return 0;
+}
