@@ -136,3 +136,73 @@ void dfs(int curx, int cury)
             continue;
         }
         if (i > ma[down[curx][cury].x][down[curx][cury].y].down || i > ma[righ[curx][cury].x][righ[curx][cury].y].right)break;
+        if (!visit[down[curx][cury].x][down[curx][cury].y].d[i] && !visit[righ[curx][cury].x][righ[curx][cury].y].r[i])
+        {
+            visit[down[curx][cury].x][down[curx][cury].y].d[i] = true;
+            visit[righ[curx][cury].x][righ[curx][cury].y].r[i] = true;
+            ma[down[curx][cury].x][down[curx][cury].y].down -= i;
+            ma[righ[curx][cury].x][righ[curx][cury].y].right -= i;
+            ma[down[curx][cury].x][down[curx][cury].y].lend-= 1;
+            ma[righ[curx][cury].x][righ[curx][cury].y].lenr -= 1;
+            ans[curx][cury] = i;
+            dfs(curx, cury + 1);
+            visit[down[curx][cury].x][down[curx][cury].y].d[i] = false;
+            visit[righ[curx][cury].x][righ[curx][cury].y].r[i] = false;
+            ma[down[curx][cury].x][down[curx][cury].y].down += i;
+            ma[righ[curx][cury].x][righ[curx][cury].y].right += i;
+            ma[down[curx][cury].x][down[curx][cury].y].lend += 1;
+            ma[righ[curx][cury].x][righ[curx][cury].y].lenr += 1;
+        }
+    }
+}
+int main()
+{
+    cin >> n >> m;
+    for (int i = 1; i <= n; i++)
+    {
+        for (int j = 1; j <= m; j++)
+        {
+            int t;
+            cin >> t;
+            if (t == 1)
+            {
+                w[i][j] = true;
+                if (!w[i - 1][j])
+                {
+                    down[i][j] = { i - 1,j };
+                }
+                else
+                {
+                    down[i][j] = down[i - 1][j];
+                }
+                ma[down[i][j].x][down[i][j].y].lend++;
+                if (!w[i][j - 1])
+                {
+                    righ[i][j] = { i,j - 1 };
+                }
+                else {
+                    righ[i][j] = righ[i][j - 1];
+                }
+                ma[righ[i][j].x][righ[i][j].y].lenr++;
+            }
+            else if (t == 2)
+            {
+                w[i][j] = false;
+                int a, b;
+                cin >> a >> b;
+                if (a != -1)
+                {
+                    ma[i][j].down = a;
+                }
+
+                if (b != -1)
+                {
+                    ma[i][j].right = b;
+                }
+            }
+        }
+    }
+
+    dfs(1, 1);
+    return 0;
+}
