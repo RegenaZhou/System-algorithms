@@ -56,3 +56,83 @@ _ 2 1 8 3 _ _
 对于 60% 的测试用例，3≤M,N≤10。
 
 对于 100% 的测试用例，3≤M,N≤15，1≤ 灰色格子中的数字 ≤50。*/
+#include <iostream>
+using namespace std;
+struct point
+{
+    int x, y;
+};
+point down[20][20];
+point righ[20][20];
+bool w[20][20];
+int ans[20][20];
+struct black
+{
+    int down, right,lenr,lend;
+
+};
+
+struct pp
+{
+    bool d[10];
+    bool r[10];
+
+    pp()
+    {
+        for (int i = 1; i <= 9; i++)d[i] =r[i]= false;
+    }
+
+};
+pp visit[20][20];//判读条目中是否已经用了某一个数
+int n, m;
+black ma[20][20];//黑色方块信息：down--下条目之和 right--右条目之和  lend--下条目的方块数  lenr--右条目方块数
+bool f;//剪枝
+void dfs(int curx, int cury)
+{
+    if (f)return;
+    if (cury > m)
+    {
+        cury = 1;
+        curx += 1;
+    }
+
+    if (curx > n)
+    {
+        for (int i = 1; i <= n; i++)
+        {
+            for (int j = 1; j <= m; j++)
+            {
+                if (!w[i][j])
+                {
+                    if (ma[i][j].right != 0 || ma[i][j].down != 0)return;
+                }
+            }
+        }
+        for (int i = 1; i <= n; i++)
+        {
+            for (int j = 1; j <= m; j++)
+            {
+                if (!w[i][j])cout << '_' << ' ';
+                else cout << ans[i][j] << ' ';
+            }
+            cout << endl;
+        }
+        f = true;
+        return;
+    }
+    if (!w[curx][cury])
+    {
+        dfs(curx, cury + 1);
+    }
+
+    for (int i = 1; i <= 9; i++)
+    {
+        if (ma[down[curx][cury].x][down[curx][cury].y].lend == 1&& ma[down[curx][cury].x][down[curx][cury].y].down - i!=0)
+        {
+            continue;
+        }
+        if (ma[righ[curx][cury].x][righ[curx][cury].y].lenr == 1 && ma[righ[curx][cury].x][righ[curx][cury].y].right - i != 0)
+        {
+            continue;
+        }
+        if (i > ma[down[curx][cury].x][down[curx][cury].y].down || i > ma[righ[curx][cury].x][righ[curx][cury].y].right)break;
