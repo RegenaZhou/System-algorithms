@@ -1,4 +1,4 @@
-﻿/*
+/*
 问题描述
 小蓝和小桥是两位年轻的建筑师，他们正在设计一座新的城市。
 
@@ -21,3 +21,35 @@
 
 样例输出
 8*/
+#include<iostream>
+using namespace std;
+using ll = long long;
+ll n, m, k, t = 0, a, b, x;
+const ll N = 55;
+const ll q = 1e9 + 7;
+ll dp[N][2505];
+int main()
+{
+    ios::sync_with_stdio(), cin.tie(0), cout.tie(0);
+    cin >> n >> m >> k;
+    dp[0][0] = 1;
+    for (ll i = 1; i <= n; i++)
+    {
+        for (ll j = i; j <= k && (k - j >= n - i); j++)
+        {
+            for (ll l = 1; l <= j - i + 1 && l <= m; l++)
+            {
+                dp[i][j] += (dp[i - 1][j - l]) % q;
+                dp[i][j] %= q;
+            }
+        }
+    }
+    for (ll i = n; i <= k; i++)
+    {
+        t += dp[n][i];
+        t %= q;
+    }
+    cout << t << '\n';
+
+    return 0;
+}
