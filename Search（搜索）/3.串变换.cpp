@@ -39,84 +39,74 @@ Yes
 数据范围
 对于 100% 的数据，1≤n≤10，1≤k≤7，1≤opi≤2，0≤xi,yi<n。*/
 #include <iostream>
+#include <vector>
+#include <string>
 using namespace std;
-struct Option
+using ll = long long;
+
+struct Node
 {
-    int select;
-    int x;
-    int y;
+    int op, x, y;
 };
 
-string S, T;
-int N, K;
-Option opt[10];
-bool visit[10];
-bool flag = 0;
+int n, k;
+string s1, s2;
+vector<Node> cz;
+vector<int> vis;
+bool ans = false;
 
-void dfs(string s, int start)
+void dfs()
 {
+    if (ans) return;
 
-    if (flag) return;
-
-    visit[start] = true;
-    int x = opt[start].x;
-    int y = opt[start].y;
-
-    if (opt[start].select == 1)
+    if (s1 == s2)
     {
-        int tmp = (int)(s[x] - '0');
-        tmp = (tmp + y) % 10;
-        s[x] = (char)(tmp + '0');
-    }
-    else if (opt[start].select == 2)
-    {
-        swap(s[x], s[y]);
-    }
-
-    if (s == T)
-    {
-        flag = 1;
+        ans = true;
         return;
     }
 
-    for (int i = 1; i <= K; i++)
+    for (int i = 0; i < k; i++)
     {
-        string ss;
-        if (i == start) continue;
-        if (visit[i] == 0)
+        if (vis[i] == 0)
         {
-            ss = s;
-            dfs(ss, i);
-            visit[i] = false;
+            vis[i] = 1;
+            dfs();
+            if (cz[i].op == 1)
+            {
+                s1[cz[i].x] = (char)((s1[cz[i].x] - '0' + cz[i].y) % 10 + '0');
+                dfs();
+                s1[cz[i].x] = (char)((s1[cz[i].x] - '0' - cz[i].y + 10) % 10 + '0');
+            }
+            else
+            {
+                char c1 = s1[cz[i].x];
+                s1[cz[i].x] = s1[cz[i].y];
+                s1[cz[i].y] = c1;
+                dfs();
+                c1 = s1[cz[i].x];
+                s1[cz[i].x] = s1[cz[i].y];
+                s1[cz[i].y] = c1;
+            }
+            vis[i] = 0;
         }
     }
+
 }
 
 int main()
 {
     ios::sync_with_stdio(0), cin.tie(0), cout.tie(0);
-    string temp_S;
-    cin >> N;
-    cin >> S >> T;
-    temp_S = S;
-    cin >> K;
-    for (int i = 1; i <= K; i++)
+    cin >> n >> s1 >> s2 >> k;
+
+    cz.resize(k);
+    vis.resize(k);
+    for (int i = 0; i < k; i++)
     {
-        cin >> opt[i].select >> opt[i].x >> opt[i].y;
+        cin >> cz[i].op >> cz[i].x >> cz[i].y;
     }
 
-    for (int i = 1; i <= K; i++)
-    {
-        memset(visit, 0, sizeof(visit));
-        temp_S = S;
-        dfs(temp_S, i);
-        if (flag)
-        {
-            cout << "Yes\n";
-            break;
-        }
-    }
-    if (flag == 0)cout << "No\n";
+    dfs();
 
+    cout << (ans ? "Yes" : "No") << '\n';
     return 0;
 }
